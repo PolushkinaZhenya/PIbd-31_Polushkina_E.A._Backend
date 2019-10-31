@@ -19,7 +19,6 @@ class VacancyController extends Controller
         $data = compact('list', 'status');
 
         return response()->json($data);
-        //return response()->json($list);
     }
 
 /* Store a newly created resource in storage.
