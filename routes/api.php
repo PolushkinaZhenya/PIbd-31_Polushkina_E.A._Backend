@@ -27,3 +27,9 @@ Route::group(['namespace' => 'Api'], function () {
 
 //отдаем список вакансий(ленту)
 Route::resource('/vacancies', 'VacancyController')->middleware('auth:api');
+
+Route::group(['namespace' => 'Auth'], function () {
+    Route::get('/login/{provider}', 'SocialController@redirectToProvider');
+    Route::get('/login/{provider}/callback', 'SocialController@handleProviderCallback');
+    Route::get('/login/{provider}/getAuth', 'SocialController@getAuth');
+});
