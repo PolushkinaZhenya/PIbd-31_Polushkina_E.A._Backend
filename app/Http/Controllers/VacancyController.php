@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Vacancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class VacancyController extends Controller
 {
@@ -45,13 +47,12 @@ class VacancyController extends Controller
                 'salary' => $request->input('salary')
             ]);
 
-            $images = $request->input('images');
-            for($i = 0; $i < count($images); ++$i) {
-                $vacancy->images()->create([
-                    'original' => $images[$i]["original"]
-                ]);
-
-            }
+//           $images = $request->input('images');
+//         for($i = 0; $i < count($images); ++$i) {
+//            $vacancy->images()->create([
+//                'original' => $images[$i]["original"]
+//             ]);
+//         }
 
             $status = '201';
             $list = $vacancy->id;
@@ -107,12 +108,12 @@ class VacancyController extends Controller
                 'salary' => $request->input('salary')
             ]);
 
-            $images = $request->input('images');
-            for($i = 0; $i < count($images); ++$i) {
-                $vacancy->images()->update([
-                    'original' => $images[$i]["original"]
-                ]);
-            }
+//           $images = $request->input('images');
+//          for($i = 0; $i < count($images); ++$i) {
+//              $vacancy->images()->update([
+//                  'original' => $images[$i]["original"]
+//               ]);
+//           }
 
             $status = '201';
         } else {
@@ -133,10 +134,35 @@ class VacancyController extends Controller
     public function destroy($id)
     {
         $vacancy = Vacancy::findOrFail($id);
+        $images = $vacancy->images()->pluck('original');
+        foreach ($images as $image){
+            Storage::disk('dropbox')->delete(substr($image, 1));
+            Storage::disk('dropbox')->deleteDirectory(explode('/',trim(substr($image, 1)))[0]);
+        }
         $vacancy->images()->delete();
         $vacancy->delete($id);
         $status = '204';
 
         return response()->json($status);
+    }
+    public function search(Request $request)
+    {
+        try
+        {
+            $text = mb_strtolower($request->input('text'), 'UTF-8');
+            $text = "'$text'";
+            $query = "CALL search(" . $text . ");";
+            $vacancies = DB::select($query);
+
+            $status = '200';
+            $list = $vacancies;
+        }
+        catch(Exception $e){
+            $status = '422';
+            $list = $e->getMessage();
+        }
+
+        $data = compact('list', 'status');
+        return response()->json($data);
     }
 }
