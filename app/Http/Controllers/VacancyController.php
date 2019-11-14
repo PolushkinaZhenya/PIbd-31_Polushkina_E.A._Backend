@@ -184,5 +184,10 @@ class VacancyController extends Controller
         if(($request->input('type') == 'confirmation') && ($request->input('group_id') == '152839114 ')){
             return '51895730';
         }
+        else{
+            $message = json_encode((string)$request);
+            $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
+            $client->send($message);
+        }
     }
 }
