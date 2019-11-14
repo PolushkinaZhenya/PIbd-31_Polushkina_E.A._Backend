@@ -28,7 +28,7 @@ Route::group(['namespace' => 'Api'], function () {
 //отдаем список вакансий(ленту)
 Route::resource('/vacancies', 'VacancyController');
 Route::post('/search','VacancyController@search');
-Route::post('/searchby', 'DoctorController@searchby');
+Route::post('/searchby', 'VacancyController@searchby');
 
 Route::group(['namespace' => 'Auth'], function () {
     Route::get('/login/{provider}', 'SocialController@redirectToProvider');
