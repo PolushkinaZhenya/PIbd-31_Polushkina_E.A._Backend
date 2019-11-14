@@ -26,8 +26,9 @@ Route::group(['namespace' => 'Api'], function () {
 });
 
 //отдаем список вакансий(ленту)
-Route::resource('/vacancies', 'VacancyController')->middleware('auth:api');
-Route::post('/search','VacancyController@search')->middleware('auth:api');
+Route::resource('/vacancies', 'VacancyController');
+Route::post('/search','VacancyController@search');
+Route::post('/searchby', 'DoctorController@searchby');
 
 Route::group(['namespace' => 'Auth'], function () {
     Route::get('/login/{provider}', 'SocialController@redirectToProvider');
@@ -35,4 +36,13 @@ Route::group(['namespace' => 'Auth'], function () {
     Route::get('/login/{provider}/getAuth', 'SocialController@getAuth');
 });
 
-Route::post('/upload_to_dropbox','DropboxController@uploadToDropboxFile')->middleware('auth:api');
+Route::post('/upload_to_dropbox','DropboxController@uploadToDropboxFile');
+
+Route::get('/dropbox', function () {
+    $token = env('DROPBOX_TOKEN');
+    $status = '200';
+    $res = compact('token', 'status');
+    return response()->json($res);
+});
+
+

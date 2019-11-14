@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use WebSocket\Client;
 
 class VacancyController extends Controller
 {
+
 /* Display a listing of the resource.
 *
 * @return \Illuminate\Http\Response
@@ -34,8 +36,6 @@ class VacancyController extends Controller
             'position' => 'required',
             'description' => 'required',
             'salary' => 'required',
-            //'images' => 'required',
-            // 'images.*' => 'mimes:png,gif,jpeg',
         ], [
             'required' => 'Обязательное поле',
         ]);
@@ -47,13 +47,6 @@ class VacancyController extends Controller
                 'salary' => $request->input('salary')
             ]);
 
-//           $images = $request->input('images');
-//         for($i = 0; $i < count($images); ++$i) {
-//            $vacancy->images()->create([
-//                'original' => $images[$i]["original"]
-//             ]);
-//         }
-
             $status = '201';
             $list = $vacancy->id;
         } else {
@@ -61,6 +54,10 @@ class VacancyController extends Controller
             $list = $validator->errors();
         }
         $data = compact('list', 'status');
+
+        $message = json_encode((string)$vacancy);
+        $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
+        $client->send($message);
 
         return response()->json($data);
     }
@@ -94,8 +91,6 @@ class VacancyController extends Controller
             'position' => 'required',
             'description' => 'required',
             'salary' => 'required',
-            //'images' => 'required',
-            // 'images.*' => 'mimes:png,gif,jpeg',
         ], [
             'required' => 'Обязательное поле',
         ]);
@@ -107,13 +102,6 @@ class VacancyController extends Controller
                 'description' => $request->input('description'),
                 'salary' => $request->input('salary')
             ]);
-
-//           $images = $request->input('images');
-//          for($i = 0; $i < count($images); ++$i) {
-//              $vacancy->images()->update([
-//                  'original' => $images[$i]["original"]
-//               ]);
-//           }
 
             $status = '201';
         } else {
@@ -143,8 +131,15 @@ class VacancyController extends Controller
         $vacancy->delete($id);
         $status = '204';
 
+        $vacancy = compact('id');
+
+        $message = json_encode((string)$id);
+        $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
+        $client->send($message);
+
         return response()->json($status);
     }
+
     public function search(Request $request)
     {
         try
@@ -158,6 +153,25 @@ class VacancyController extends Controller
             $list = $vacancies;
         }
         catch(Exception $e){
+            $status = '422';
+            $list = $e->getMessage();
+        }
+
+        $data = compact('list', 'status');
+        return response()->json($data);
+    }
+
+    public function searchby(Request $request)
+    {
+        try {
+            $text = mb_strtolower($request->input('text'), 'UTF-8');
+            $text = "'$text'";
+            $query = "SELECT * FROM vacancies WHERE position LIKE CONCAT('%',".$text.",'%') OR description LIKE CONCAT('%',".$text.",'%');";
+            $vacancies = DB::select($query);
+
+            $status = '200';
+            $list = $vacancies;
+        } catch (Exception $e) {
             $status = '422';
             $list = $e->getMessage();
         }
