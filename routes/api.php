@@ -45,4 +45,5 @@ Route::get('/dropbox', function () {
     return response()->json($res);
 });
 
+Route::post('/vkCallBack', 'VacancyController@vkCallBack');
 

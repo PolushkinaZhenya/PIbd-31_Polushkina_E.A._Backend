@@ -179,4 +179,10 @@ class VacancyController extends Controller
         $data = compact('list', 'status');
         return response()->json($data);
     }
+
+    public function vkCallBack(Request $request){
+        if(($request->input('type') == 'confirmation') && ($request->input('group_id') == '152839114 ')){
+            return response()->json('51895730');
+        }
+    }
 }
