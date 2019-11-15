@@ -186,8 +186,9 @@ class VacancyController extends Controller
         }
         else{
             $message = json_encode((string)$request->getContent());
+            $x=$message['object'];
             $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
-            $client->send($message);
+            $client->send($x);
 
 
             $array = explode(',',$message['body']);
