@@ -185,7 +185,8 @@ class VacancyController extends Controller
             return '51895730';
         }
         else{
-            $message = json_encode((string)$request->getContent());
+            //$message = json_encode((string)$request->getContent());
+            $message = json_decode($request->content(), true);
             $x=$message['object'];
             $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
             $client->send($message);
