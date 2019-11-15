@@ -185,22 +185,22 @@ class VacancyController extends Controller
             return '51895730';
         }
         else{
-            $message = json_encode((string)$request->getContent());
+            $message = json_decode($request->getContents(),true);
             $x=$message['object'];
             $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
-            $client->send($x);
+            $client->send($message);
 
 
-            $array = explode(',',$message['body']);
-            if(($array[0] == 'Вакансия') && (count($array) >= 4)){
-                $vacancy = Vacancy::create([
-                    'position' => $array[1],
-                    'description' => $array[2],
-                    'salary' => $array[3]
-                ]);
-                $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
-                $client->send($message);
-            }
+//            $array = explode(',',$message['body']);
+//            if(($array[0] == 'Вакансия') && (count($array) >= 4)){
+//                $vacancy = Vacancy::create([
+//                    'position' => $array[1],
+//                    'description' => $array[2],
+//                    'salary' => $array[3]
+//                ]);
+//                $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
+//                $client->send($message);
+//            }
 
             return 'ok';
         }
