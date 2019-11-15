@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSocialIdToUsers2 extends Migration
+class AddIndexToVacancies extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class AddSocialIdToUsers2 extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('social_id')->nullable();
+        Schema::table('vacancies', function (Blueprint $table) {
+            $table->index(['id']);
         });
     }
+
     /**
      * Reverse the migrations.
      *
@@ -24,8 +25,8 @@ class AddSocialIdToUsers2 extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('social_id');
+        Schema::table('vacancies', function (Blueprint $table) {
+            $table->dropIndex(['id']);
         });
     }
 }

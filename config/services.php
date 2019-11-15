@@ -37,7 +37,8 @@ return [
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_SECRET'),
-        'redirect' => 'http://localhost/PIbd-31_Polushkina_E.A._Backend/public/api/login/facebook/callback',
+        //'redirect' => 'http://localhost/PIbd-31_Polushkina_E.A._Backend/public/api/login/facebook/callback',
+        'redirect' => 'https://labourexchangebackend.herokuapp.com/api/login/facebook/callback',
     ],
 
 ];

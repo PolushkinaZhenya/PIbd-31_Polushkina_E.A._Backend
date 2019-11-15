@@ -87,7 +87,8 @@ class SocialController extends Controller
         session(['data' => $data]);
         //return redirect()->action('App\Http\Controllers\Auth\SocialController@getAuth');
         //return response()->json($data);
-        return redirect('http://localhost:4200/info')->with($data);
+        //return redirect('http://localhost:4200/info')->with($data);
+        return redirect('https://labourexchangefrontend.herokuapp.com/record')->with($data);
     }
     /**
      * Get the token array structure.
