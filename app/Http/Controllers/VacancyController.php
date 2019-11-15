@@ -186,7 +186,11 @@ class VacancyController extends Controller
         }
         else{
             $message = json_encode((string)$request->getContent());
-            $array = explode('\r\n',$message['body']);
+            $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
+            $client->send($message);
+
+
+            $array = explode(',',$message['body']);
             if(($array[0] == 'Вакансия') && (count($array) >= 4)){
                 $vacancy = Vacancy::create([
                     'position' => $array[1],
@@ -196,6 +200,7 @@ class VacancyController extends Controller
                 $client = new Client('ws://labourexchangewebsocket.herokuapp.com/');
                 $client->send($message);
             }
+
             return 'ok';
         }
     }
